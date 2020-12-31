@@ -76,6 +76,22 @@ app.get("/musics/filteredBy/titleBeginsBy", (req, res) => {
   );
 });
 
+app.get("/musics/filteredBy/titleEndsBy", (req, res) => {
+  const letters = `%${req.query.letters}`;
+  connection.query(
+    "SELECT * FROM track WHERE title LIKE ?",
+    letters,
+    (err, results) => {
+      if (err) {
+        return res.status(500).json({ err: err.message, sql: err.sql });
+      } else if (results.length === 0) {
+        res.status(200).send("No tracks match");
+      }
+      return res.status(200).json(results);
+    }
+  );
+});
+
 app.get("/musics/filteredBy/bpm", (req, res) => {
   connection.query(
     "SELECT * FROM track WHERE bpm > ?",
